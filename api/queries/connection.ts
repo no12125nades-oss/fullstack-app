@@ -1,25 +1,18 @@
-import { drizzle } from "drizzle-orm/mysql2";
-import mysql from "mysql2/promise";
-import { env } from "../lib/env";
+import { drizzle } from "drizzle-orm/node-postgres";
+import pg from "pg";
 import * as schema from "@db/schema";
 import * as relations from "@db/relations";
 
 const fullSchema = { ...schema, ...relations };
 
-let instance: ReturnType<typeof drizzle<typeof fullSchema>> | null = null;
+let instance: any = null;
 
 export function getDb() {
   if (!instance) {
-    const poolConnection = mysql.createPool({
-      uri: env.databaseUrl,
-      ssl: {
-        rejectUnauthorized: false,
-      },
+    const pool = new pg.Pool({
+      connectionString: process.env.DATABASE_URL,
     });
-    instance = drizzle(poolConnection, {
-      schema: fullSchema,
-      mode: "default",
-    });
+    instance = drizzle(pool, { schema: fullSchema });
   }
   return instance;
 }
