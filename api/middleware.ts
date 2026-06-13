@@ -12,11 +12,12 @@ export const publicQuery = t.procedure;
 
 // Создаем фейкового администратора для полного обхода блокировки
 const fakeAdminUser = {
-  id: "admin-bypass-id",
+  id: 1,
   name: "Super Admin",
   email: "admin@localhost",
   role: "admin"
 };
+
 
 const requireAuth = t.middleware(async (opts) => {
   const { ctx, next } = opts;
